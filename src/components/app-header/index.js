@@ -1,9 +1,10 @@
-import {LitElement, html} from 'lit';
+import {html} from 'lit';
 import {t, setLanguage} from '../../i18n/index.js';
 import {Router} from '@vaadin/router';
 import {appHeaderStyles} from './styles.js';
+import {BaseElement} from '../base-element/index.js';
 
-export default class AppHeader extends LitElement {
+export default class AppHeader extends BaseElement {
   static styles = appHeaderStyles;
   constructor() {
     super();
@@ -42,27 +43,30 @@ export default class AppHeader extends LitElement {
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
       />
-      <header>
-        <div class="left">
+      <header class="app-header">
+        <div class="app-header_left">
           <img src="../../assets/ing.webp" alt="Logo" height="40" />
-          <span class="bankName">ING</span>
+          <span class="app-header_bank-name">ING</span>
         </div>
-        <div class="right">
+        <div class="app-header_right">
           <button
-            class="routingButtons ${this.activeRoute === '/' ? 'active' : ''}"
+            class="app-header_routing-buttons ${this.activeRoute === '/'
+              ? 'active'
+              : ''}"
             @click=${() => Router.go('/')}
           >
-            <i class="fa-solid fa-users"></i>${t('employees')}
+            <i class="fa-solid fa-users"></i>${this.t('employees')}
           </button>
           <button
-            class="routingButtons ${this.activeRoute === '/add-new-employee'
+            class="app-header_routing-buttons ${this.activeRoute ===
+            '/add-new-employee'
               ? 'active'
               : ''}"
             @click=${() => Router.go('/add-new-employee')}
           >
             <i class="fa-solid fa-plus"></i>${t('addNew')}
           </button>
-          <button class="langButton" @click=${this._toggleLanguage}>
+          <button class="app-header_lang-button" @click=${this._toggleLanguage}>
             <img
               src=${this.lang === 'en'
                 ? '../../assets/english.webp'

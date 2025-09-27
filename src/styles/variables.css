@@ -2,6 +2,6 @@
   --primary-color: #ff6600;
   --text-color: #000000;
   --inactive-color: #ffa76c;
-  display: block;
-  font-family: Arial, sans-serif;
+  --page-background-color: #f8f8f8;
+  --text-gray: #797979;
 }
