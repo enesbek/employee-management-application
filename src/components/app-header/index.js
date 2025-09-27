@@ -1,67 +1,24 @@
-import {LitElement, html, css} from 'lit';
-import {t, setLanguage} from '../i18n/index.js';
+import {LitElement, html} from 'lit';
+import {t, setLanguage} from '../../i18n/index.js';
+import {Router} from '@vaadin/router';
+import {appHeaderStyles} from './styles.js';
 
-export class AppHeader extends LitElement {
-  static styles = css`
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.2rem 0.5rem;
-    }
-
-    .right {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding-right: 1rem;
-    }
-
-    .left {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .bankName {
-      font-size: 0.9rem;
-      font-weight: semi-bold;
-    }
-
-    .routingButtons {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--primary-color);
-      font-size: 12px;
-      font-weight: 100;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .langButton {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-    }
-
-    .right i {
-      color: var(--primary-color);
-      font-size: 18px;
-    }
-  `;
-
+export default class AppHeader extends LitElement {
+  static styles = appHeaderStyles;
   constructor() {
     super();
     this.lang = document.documentElement.lang || 'en';
     this._onLangChange = this._onLangChange.bind(this);
+    this.activeRoute = window.location.pathname;
   }
 
   connectedCallback() {
     super.connectedCallback();
     window.addEventListener('language-changed', this._onLangChange);
+    window.addEventListener('vaadin-router-location-changed', (e) => {
+      this.activeRoute = e.detail.location.pathname;
+      this.requestUpdate();
+    });
   }
 
   disconnectedCallback() {
@@ -91,10 +48,18 @@ export class AppHeader extends LitElement {
           <span class="bankName">ING</span>
         </div>
         <div class="right">
-          <button class="routingButtons">
+          <button
+            class="routingButtons ${this.activeRoute === '/' ? 'active' : ''}"
+            @click=${() => Router.go('/')}
+          >
             <i class="fa-solid fa-users"></i>${t('employees')}
           </button>
-          <button class="routingButtons">
+          <button
+            class="routingButtons ${this.activeRoute === '/add-new-employee'
+              ? 'active'
+              : ''}"
+            @click=${() => Router.go('/add-new-employee')}
+          >
             <i class="fa-solid fa-plus"></i>${t('addNew')}
           </button>
           <button class="langButton" @click=${this._toggleLanguage}>

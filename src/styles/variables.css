@@ -1,6 +1,7 @@
 :root {
   --primary-color: #ff6600;
   --text-color: #000000;
+  --inactive-color: #ffa76c;
   display: block;
   font-family: Arial, sans-serif;
 }
