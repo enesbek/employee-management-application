@@ -17,4 +17,7 @@ export default {
   updateEmployee: 'Çalışanı Güncelle',
   addEmployee: 'Çalışan Ekle',
   confirmDelete: 'Bu çalışanı silmek istediğinize emin misiniz?',
+  dateOfBirth: 'Doğum Tarihi',
+  dateOfEmployment: 'İşe Başlama Tarihi',
+  phone: 'Telefon',
 };

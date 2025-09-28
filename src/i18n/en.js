@@ -17,4 +17,7 @@ export default {
   updateEmployee: 'Update Employee',
   addEmployee: 'Add Employee',
   confirmDelete: 'Are you sure you want to delete this employee?',
+  dateOfBirth: 'Date of Birth',
+  dateOfEmployment: 'Date of Employment',
+  phone: 'Phone',
 };

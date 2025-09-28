@@ -1,7 +1,8 @@
-import {LitElement, html} from 'lit';
+import {html} from 'lit';
 import {employeeFormStyles} from './styles';
+import {BaseElement} from '../base-element';
 
-export class EmployeeForm extends LitElement {
+export class EmployeeForm extends BaseElement {
   static properties = {
     employee: {type: Object},
   };
@@ -25,70 +26,114 @@ export class EmployeeForm extends LitElement {
 
   render() {
     return html`
-      <form @submit=${this.handleSubmit}>
-        <input
-          name="firstName"
-          placeholder="First Name"
-          .value=${this.employee?.firstName ?? ''}
-          required
-        />
-        <input
-          name="lastName"
-          placeholder="Last Name"
-          .value=${this.employee?.lastName ?? ''}
-          required
-        />
-        <input
-          type="date"
-          name="dateOfEmployment"
-          placeholder="Date of Employment"
-          .value=${this.employee?.dateOfEmployment ?? ''}
-          required
-        />
-        <input
-          type="date"
-          name="dateOfBirth"
-          placeholder="Date of Birth"
-          .value=${this.employee?.dateOfBirth ?? ''}
-          required
-        />
-        <input
-          name="phone"
-          placeholder="Phone Number"
-          .value=${this.employee?.phone ?? ''}
-          pattern="^+?d{7,15}$"
-          title="Enter a valid phone number"
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email Address"
-          .value=${this.employee?.email ?? ''}
-          required
-        />
-        <select
-          name="department"
-          .value=${this.employee?.department ?? ''}
-          required
-        >
-          <option value="" disabled>Select Department</option>
-          <option value="Analytics">Analytics</option>
-          <option value="Tech">Tech</option>
-        </select>
-        <select
-          name="position"
-          .value=${this.employee?.position ?? ''}
-          required
-        >
-          <option value="" disabled>Select Position</option>
-          <option value="Junior">Junior</option>
-          <option value="Medior">Medior</option>
-          <option value="Senior">Senior</option>
-        </select>
-        <button type="submit">
-          ${this.employee ? 'Update Employee' : 'Add Employee'}
-        </button>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      />
+      <form action="#" method="post" aria-label="örnek form">
+        <!-- 8 input alanı -->
+        <div class="field">
+          <label for="firstName">${this.t('firstName')}</label>
+          <input
+            name="firstName"
+            .value=${this.employee?.firstName ?? ''}
+            type="text"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="lastName">${this.t('lastName')}</label>
+          <input
+            name="lastName"
+            type="text"
+            .value=${this.employee?.lastName ?? ''}
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="dateOfEmployment">${this.t('dateOfEmployment')}</label>
+          <input
+            type="date"
+            name="dateOfEmployment"
+            .value=${this.employee?.dateOfEmployment ?? ''}
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="dateOfBirth">${this.t('dateOfBirth')}</label>
+          <input
+            type="email"
+            name="dateOfBirth"
+            .value=${this.employee?.dateOfBirth ?? ''}
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="phone">${this.t('phone')}</label>
+          <input
+            type="tel"
+            name="phone"
+            .value=${this.employee?.phone ?? ''}
+            pattern="^+?d{7,15}$"
+            title="Enter a valid phone number"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="email">${this.t('email')}</label>
+          <input
+            type="email"
+            name="email"
+            .value=${this.employee?.email ?? ''}
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="department">${this.t('department')}</label>
+          <input
+            name="department"
+            .value=${this.employee?.department ?? ''}
+            required
+            type="text"
+          />
+        </div>
+
+        <div class="field">
+          <label for="position">${this.t('position')}</label>
+          <select
+            name="position"
+            type="text"
+            .value=${this.employee?.position ?? ''}
+            required
+          >
+            <option value="" disabled>Select Position</option>
+            <option value="Junior">Junior</option>
+            <option value="Medior">Mid Level</option>
+            <option value="Senior">Senior</option>
+          </select>
+        </div>
+
+        <!-- Buttons that are the same width as a single column and centered -->
+        <div class="buttons-row">
+          <div class="btns">
+            <button type="submit" class="btn-save">
+              ${this.employee ? this.t('updateEmployee') : this.t('save')}
+            </button>
+            <button
+              type="button"
+              class="btn-cancel"
+              onclick="document.querySelector('form').reset();"
+            >
+              ${this.t('cancel')}
+            </button>
+          </div>
+        </div>
       </form>
     `;
   }
