@@ -1,12 +1,13 @@
 import {css, html, LitElement} from 'lit';
 import {Router} from '@vaadin/router';
 import './components/app-header/index.js';
-import './pages/employees-page.js';
-import './pages/add-new-employee.js';
+import './pages/employees-page/index.js';
+import './pages/add-new-employee/index.js';
 
 export class AppRoot extends LitElement {
   static styles = css`
     #outlet {
+      height: 100%;
       max-height: calc(100vh - 40px);
       overflow-y: auto;
     }

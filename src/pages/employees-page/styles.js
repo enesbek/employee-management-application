@@ -6,6 +6,7 @@ export const employeePageStyles = css`
     padding: 2rem 2rem;
     max-height: 100%;
     min-width: 750px;
+    height: 100%;
   }
 
   .employees-page {

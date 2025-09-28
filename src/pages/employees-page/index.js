@@ -1,9 +1,9 @@
 import {html} from 'lit';
-import '../components/employees-header';
-import '../components/employee-list';
-import {BaseElement} from '../components/base-element';
-import {employees as employeesData} from '../data/employees.js';
-import {employeePageStyles} from './employees-page.styles.js';
+import '../../components/pages-header/index.js';
+import '../../components/employee-list/index.js';
+import {BaseElement} from '../../components/base-element/index.js';
+import {employees as employeesData} from '../../data/employees.js';
+import {employeePageStyles} from './styles.js';
 
 export class EmployeesPage extends BaseElement {
   static properties = {
@@ -58,10 +58,12 @@ export class EmployeesPage extends BaseElement {
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
       />
       <div class="employees-page">
-        <employees-header
+        <pages-header
           .view=${this.view}
           @view-change=${this._onViewChange}
-        ></employees-header>
+          title="employeeList"
+          showActions=${true}
+        ></pages-header>
 
         ${this.view === 'list'
           ? html`<employee-list
