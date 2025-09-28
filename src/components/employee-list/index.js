@@ -30,7 +30,7 @@ export default class EmployeeList extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${this.employees.map(
+          ${(this.employees || []).map(
             (employee) => html`
               <tr>
                 <td class="select-icon">
@@ -38,12 +38,12 @@ export default class EmployeeList extends LitElement {
                 </td>
                 <td>${employee.firstName}</td>
                 <td>${employee.lastName}</td>
-                <td class="thin">${employee.dateOfEmployment}</td>
-                <td class="thin">${employee.dateOfBirth}</td>
+                <td class="thin">${employee.dateOfEmployment || 'N/A'}</td>
+                <td class="thin">${employee.birthDate}</td>
                 <td class="thin">${employee.phone}</td>
                 <td class="thin">${employee.email}</td>
-                <td class="thin">${employee.department}</td>
-                <td class="thin">${employee.position}</td>
+                <td class="thin">${employee.company?.department || 'N/A'}</td>
+                <td class="thin">${employee.company?.title || 'N/A'}</td>
                 <td class="actions">
                   <i class="fa-regular fa-pen-to-square"></i>
                   <i class="fa-solid fa-trash"></i>
