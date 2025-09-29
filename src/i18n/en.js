@@ -22,4 +22,9 @@ export default {
   dateOfEmployment: 'Date of Employment',
   editEmployee: 'Edit Employee',
   editEmployeeText: 'You are editing',
+  areYouSure: 'Are you sure?',
+  deleteConfirmationMessageLeft: 'Selected employee record of',
+  deleteConfirmationMessageRight: 'will be deleted',
+  proceed: 'Proceed',
+  deleteSelected: 'Delete Selected',
 };
