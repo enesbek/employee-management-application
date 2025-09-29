@@ -48,6 +48,12 @@ export const employeeListStyles = css`
     font-size: 1.2rem;
   }
 
+  .select-icon input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
   .actions i {
     cursor: pointer;
     margin: 0 0.3rem;

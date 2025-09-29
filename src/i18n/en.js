@@ -26,4 +26,5 @@ export default {
   deleteConfirmationMessageLeft: 'Selected employee record of',
   deleteConfirmationMessageRight: 'will be deleted',
   proceed: 'Proceed',
+  deleteSelected: 'Delete Selected',
 };

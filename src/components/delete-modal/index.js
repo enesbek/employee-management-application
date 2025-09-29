@@ -6,6 +6,8 @@ export default class DeleteModal extends BaseElement {
   static properties = {
     isOpen: {type: Boolean},
     employee: {type: Object},
+    batch: {type: Boolean},
+    selectedEmployees: {type: Array},
   };
 
   static styles = deleteModalStyles;
@@ -14,12 +16,14 @@ export default class DeleteModal extends BaseElement {
     super();
     this.isOpen = false;
     this.employee = null;
+    this.batch = false;
+    this.selectedEmployees = [];
   }
 
   handleDelete() {
     this.dispatchEvent(
       new CustomEvent('confirm-delete', {
-        detail: this.employee,
+        detail: this.batch ? this.selectedEmployees : this.employee,
         bubbles: true,
         composed: true,
       })
@@ -60,6 +64,17 @@ export default class DeleteModal extends BaseElement {
     if (!this.isOpen) {
       return html``;
     }
+    console.log('this.selectedEmployees', this.selectedEmployees);
+    let message = '';
+    if (this.batch && this.selectedEmployees?.length) {
+      message = `${this.t('deleteConfirmationMessageLeft')} ${
+        this.selectedEmployees.length
+      } ${this.t('employees')} ${this.t('deleteConfirmationMessageRight')}`;
+    } else if (this.employee) {
+      message = `${this.t('deleteConfirmationMessageLeft')} ${
+        this.employee.firstName
+      } ${this.employee.lastName} ${this.t('deleteConfirmationMessageRight')}`;
+    }
 
     return html`
       <link
@@ -78,11 +93,7 @@ export default class DeleteModal extends BaseElement {
           </div>
 
           <div class="modal-body">
-            <p>
-              ${this.t('deleteConfirmationMessageLeft')}
-              ${this.employee.firstName} ${this.employee.lastName}
-              ${this.t('deleteConfirmationMessageRight')}
-            </p>
+            <p>${message}</p>
           </div>
 
           <div class="modal-footer">

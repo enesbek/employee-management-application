@@ -11,19 +11,23 @@ export default class EmployeeList extends BaseElement {
   static properties = {
     employees: {type: Array},
     selectedEmployee: {type: Object},
+    selectedEmployees: {type: Array},
     showDeleteModal: {type: Boolean},
     activeSearchColumn: {type: String},
     searchInput: {type: String},
+    isBatchDelete: {type: Boolean},
   };
 
   constructor() {
     super();
     this.employees = [];
     this.selectedEmployee = null;
+    this.selectedEmployees = [];
     this.showDeleteModal = false;
     this.activeSearchField = null;
     this.activeSearchColumn = null;
     this.searchInput = '';
+    this.isBatchDelete = false;
   }
 
   handleEdit(employee) {
@@ -32,25 +36,35 @@ export default class EmployeeList extends BaseElement {
 
   handleDeleteClick(employee) {
     this.selectedEmployee = employee;
+    this.isBatchDelete = false;
     this.showDeleteModal = true;
   }
 
-  handleConfirmDelete(e) {
-    this.dispatchEvent(
-      new CustomEvent('delete-employee', {
-        detail: e.detail,
-        bubbles: true,
-        composed: true,
-      })
-    );
+  handleDeleteSelected() {
+    if (!this.selectedEmployees.length) return;
+    this.isBatchDelete = true;
+    this.showDeleteModal = true;
+  }
+
+  handleConfirmDelete() {
+    if (this.isBatchDelete) {
+      this.selectedEmployees.forEach((id) =>
+        useEmployeesStore.getState().deleteEmployee(id)
+      );
+      this.selectedEmployees = [];
+    } else if (this.selectedEmployee) {
+      useEmployeesStore.getState().deleteEmployee(this.selectedEmployee.id);
+      this.selectedEmployee = null;
+    }
 
     this.showDeleteModal = false;
-    this.selectedEmployee = null;
+    this.isBatchDelete = false;
   }
 
   handleCancelDelete() {
     this.showDeleteModal = false;
     this.selectedEmployee = null;
+    this.isBatchDelete = false;
   }
 
   toggleSearch(column) {
@@ -87,6 +101,23 @@ export default class EmployeeList extends BaseElement {
     `;
   }
 
+  toggleSelect(employeeId) {
+    if (this.selectedEmployees.includes(employeeId)) {
+      this.selectedEmployees = this.selectedEmployees.filter(
+        (id) => id !== employeeId
+      );
+    } else {
+      this.selectedEmployees = [...this.selectedEmployees, employeeId];
+    }
+    this.requestUpdate();
+  }
+
+  toggleSelectAll() {
+    const allSelected = this.selectedEmployees.length === this.employees.length;
+    this.selectedEmployees = allSelected ? [] : this.employees.map((e) => e.id);
+    this.requestUpdate();
+  }
+
   render() {
     return html`
       <link
@@ -96,7 +127,9 @@ export default class EmployeeList extends BaseElement {
 
       <delete-modal
         .isOpen=${this.showDeleteModal}
-        .employee=${this.selectedEmployee}
+        .employee=${this.isBatchDelete ? null : this.selectedEmployee}
+        .batch=${this.isBatchDelete}
+        .selectedEmployees=${this.isBatchDelete ? this.selectedEmployees : []}
         @confirm-delete=${this.handleConfirmDelete}
         @cancel-delete=${this.handleCancelDelete}
       ></delete-modal>
@@ -104,7 +137,13 @@ export default class EmployeeList extends BaseElement {
       <table>
         <thead>
           <tr>
-            <th class="select-icon"><i class="fa-regular fa-square"></i></th>
+            <th class="select-icon">
+              <input
+                type="checkbox"
+                .checked=${this.selectedEmployees.includes()}
+                @change=${() => this.toggleSelectAll()}
+              />
+            </th>
             <th @click=${() => this.toggleSearch('firstName')}>
               ${this.activeSearchColumn === 'firstName'
                 ? this.renderSearchInput('firstName')
@@ -145,7 +184,16 @@ export default class EmployeeList extends BaseElement {
                 ? this.renderSearchInput('position')
                 : this.t('position')}
             </th>
-            <th>${this.t('actions')}</th>
+            <th>
+              ${this.selectedEmployees.length > 0
+                ? html`<button
+                    class="button-search"
+                    @click=${() => this.handleDeleteSelected()}
+                  >
+                    ${this.t('deleteSelected')}
+                  </button>`
+                : this.t('actions')}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -153,7 +201,11 @@ export default class EmployeeList extends BaseElement {
             (employee) => html`
               <tr>
                 <td class="select-icon">
-                  <i class="fa-regular fa-square"></i>
+                  <input
+                    type="checkbox"
+                    .checked=${this.selectedEmployees.includes(employee.id)}
+                    @change=${() => this.toggleSelect(employee.id)}
+                  />
                 </td>
                 <td>${employee.firstName}</td>
                 <td>${employee.lastName}</td>
