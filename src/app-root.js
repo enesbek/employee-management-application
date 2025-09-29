@@ -20,6 +20,12 @@ export class AppRoot extends LitElement {
       {path: '/', component: 'employees-page'},
       {path: '/add-new-employee', component: 'add-new-employee'},
     ]);
+
+    window.process = {
+      env: {
+        NODE_ENV: 'development',
+      },
+    };
   }
 
   render() {

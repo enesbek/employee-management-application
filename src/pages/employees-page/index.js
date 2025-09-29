@@ -3,16 +3,16 @@ import '../../components/pages-header/index.js';
 import '../../components/employee-list/index.js';
 import {BaseElement} from '../../components/base-element/index.js';
 import {employeePageStyles} from './styles.js';
-import {fetchEmployees} from '../../api/employeesApi.js';
+import {
+  useEmployeesStore,
+  selectTotalPages,
+  selectHasNextPage,
+  selectHasPreviousPage,
+} from '../../store/employeesStore.js';
 
 export class EmployeesPage extends BaseElement {
   static properties = {
     view: {type: String},
-    employees: {type: Array},
-    currentPage: {type: Number},
-    pageSize: {type: Number},
-    total: {type: Number},
-    loading: {type: Boolean},
   };
 
   static styles = employeePageStyles;
@@ -20,52 +20,103 @@ export class EmployeesPage extends BaseElement {
   constructor() {
     super();
     this.view = 'list';
-    this.employees = [];
-    this.currentPage = 1;
-    this.pageSize = 9;
-    this.total = 0;
+    this.unsubscribe = null;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.unsubscribe = useEmployeesStore.subscribe(() => this.requestUpdate());
+    useEmployeesStore.getState().getEmployees();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.unsubscribe?.();
   }
 
   _onViewChange(e) {
     this.view = e.detail.view;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.getEmployees();
+  _handlePageChange(page) {
+    const state = useEmployeesStore.getState();
+    const totalPages = selectTotalPages(state);
+
+    if (page < 1 || page > totalPages) return;
+
+    state.setPage(page);
   }
 
-  async getEmployees() {
-    try {
-      this.loading = true;
+  _handleDeleteEmployee(e) {
+    const {id, name} = e.detail;
 
-      const data = await fetchEmployees({
-        page: this.currentPage,
-        pageSize: this.pageSize,
-      });
-
-      this.employees = [...data.users];
-      this.total = data.total;
-    } catch (err) {
-      console.error('Employees API fetch error:', err);
-      this.employees = [];
-      this.total = 0;
-    } finally {
-      this.loading = false;
+    if (confirm(`Are you sure you want to delete ${name}?`)) {
+      useEmployeesStore.getState().deleteEmployee(id);
     }
   }
 
-  get totalPages() {
-    return Math.ceil(this.total / this.pageSize);
+  _handleEditEmployee(e) {
+    const employee = e.detail;
+    useEmployeesStore.getState().selectEmployee(employee);
   }
 
-  changePage(page) {
-    if (page < 1 || page > this.totalPages) return;
-    this.currentPage = page;
-    this.getEmployees();
+  _renderPaginationButtons() {
+    const state = useEmployeesStore.getState();
+    const {currentPage} = state;
+    const totalPages = selectTotalPages(state);
+    const pages = [];
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, 5, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(
+          1,
+          '...',
+          totalPages - 4,
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        );
+      } else {
+        pages.push(
+          1,
+          '...',
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          '...',
+          totalPages
+        );
+      }
+    }
+
+    return pages.map((page) =>
+      page === '...'
+        ? html`<span class="ellipsis">...</span>`
+        : html`
+            <button
+              class=${page === currentPage ? 'active' : ''}
+              @click=${() => this._handlePageChange(page)}
+              ?disabled=${page === currentPage}
+            >
+              ${page}
+            </button>
+          `
+    );
   }
 
   render() {
+    const state = useEmployeesStore.getState();
+    const {employees, currentPage, loading, error} = state;
+    const hasPrevious = selectHasPreviousPage(state);
+    const hasNext = selectHasNextPage(state);
+
     return html`
       <link
         rel="stylesheet"
@@ -79,12 +130,23 @@ export class EmployeesPage extends BaseElement {
           showActions=${true}
         ></pages-header>
 
-        ${this.loading
-          ? html`<div class="loading">Loading...</div>`
+        ${error
+          ? html`<div class="error">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              ${error}
+            </div>`
+          : ''}
+        ${loading
+          ? html`<div class="loading">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              Loading...
+            </div>`
           : html`
               ${this.view === 'list'
                 ? html`<employee-list
-                    .employees=${this.employees}
+                    .employees=${employees}
+                    @delete-employee=${this._handleDeleteEmployee}
+                    @edit-employee=${this._handleEditEmployee}
                   ></employee-list>`
                 : html`<div>Grid View Placeholder</div>`}
             `}
@@ -92,56 +154,20 @@ export class EmployeesPage extends BaseElement {
         <div class="pagination">
           <button
             class="left"
-            @click=${() => this.changePage(this.currentPage - 1)}
-            ?disabled=${this.currentPage === 1}
+            @click=${() => this._handlePageChange(currentPage - 1)}
+            ?disabled=${!hasPrevious || loading}
+            title="Previous page"
           >
             <i class="fa-solid fa-chevron-left"></i>
           </button>
 
-          ${(() => {
-            const pages = [];
-            const total = this.totalPages;
-            const current = this.currentPage;
-
-            if (total <= 5) {
-              for (let i = 1; i <= total; i++) pages.push(i);
-            } else {
-              if (current <= 3) {
-                pages.push(1, 2, 3, 4, 5, '...', total);
-              } else if (current >= total - 2) {
-                pages.push(1, '...', total - 3, total - 2, total - 1, total);
-              } else {
-                pages.push(
-                  1,
-                  '...',
-                  current - 1,
-                  current,
-                  current + 1,
-                  '...',
-                  total
-                );
-              }
-            }
-
-            return pages.map((page) =>
-              page === '...'
-                ? html`<span class="ellipsis">...</span>`
-                : html`
-                    <button
-                      class=${page === this.currentPage ? 'active' : ''}
-                      @click=${() => this.changePage(page)}
-                      ?disabled=${page === this.currentPage}
-                    >
-                      ${page}
-                    </button>
-                  `
-            );
-          })()}
+          ${this._renderPaginationButtons()}
 
           <button
             class="right"
-            @click=${() => this.changePage(this.currentPage + 1)}
-            ?disabled=${this.currentPage === this.totalPages}
+            @click=${() => this._handlePageChange(currentPage + 1)}
+            ?disabled=${!hasNext || loading}
+            title="Next page"
           >
             <i class="fa-solid fa-chevron-right"></i>
           </button>
