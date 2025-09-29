@@ -3,6 +3,7 @@ import {employeeListStyles} from './styles';
 import {Router} from '@vaadin/router';
 import {BaseElement} from '../base-element';
 import '../../components/delete-modal/index.js';
+import {useEmployeesStore} from '../../store/employeesStore.js';
 
 export default class EmployeeList extends BaseElement {
   static styles = employeeListStyles;
@@ -11,6 +12,8 @@ export default class EmployeeList extends BaseElement {
     employees: {type: Array},
     selectedEmployee: {type: Object},
     showDeleteModal: {type: Boolean},
+    activeSearchColumn: {type: String},
+    searchInput: {type: String},
   };
 
   constructor() {
@@ -18,6 +21,9 @@ export default class EmployeeList extends BaseElement {
     this.employees = [];
     this.selectedEmployee = null;
     this.showDeleteModal = false;
+    this.activeSearchField = null;
+    this.activeSearchColumn = null;
+    this.searchInput = '';
   }
 
   handleEdit(employee) {
@@ -47,6 +53,40 @@ export default class EmployeeList extends BaseElement {
     this.selectedEmployee = null;
   }
 
+  toggleSearch(column) {
+    if (this.activeSearchColumn === column) {
+      this.activeSearchColumn = null;
+      this.searchInput = '';
+    } else {
+      this.activeSearchColumn = column;
+      this.searchInput = '';
+    }
+    this.requestUpdate();
+  }
+
+  search() {
+    if (!this.searchInput) return;
+    useEmployeesStore.getState().setSearchQuery(this.searchInput);
+  }
+
+  renderSearchInput(column) {
+    if (this.activeSearchColumn !== column) return '';
+    return html`
+      <div class="search-input-wrapper">
+        <input
+          type="text"
+          .value=${this.searchInput}
+          @input=${(e) => (this.searchInput = e.target.value)}
+          @click=${(e) => e.stopPropagation()}
+        />
+        <i
+          class="fa-solid fa-magnifying-glass button-search"
+          @click=${() => this.search()}
+        ></i>
+      </div>
+    `;
+  }
+
   render() {
     return html`
       <link
@@ -65,14 +105,46 @@ export default class EmployeeList extends BaseElement {
         <thead>
           <tr>
             <th class="select-icon"><i class="fa-regular fa-square"></i></th>
-            <th>${this.t('firstName')}</th>
-            <th>${this.t('lastName')}</th>
-            <th>${this.t('dateOfEmployment')}</th>
-            <th>${this.t('dateOfBirth')}</th>
-            <th>${this.t('phone')}</th>
-            <th>${this.t('email')}</th>
-            <th>${this.t('department')}</th>
-            <th>${this.t('position')}</th>
+            <th @click=${() => this.toggleSearch('firstName')}>
+              ${this.activeSearchColumn === 'firstName'
+                ? this.renderSearchInput('firstName')
+                : this.t('firstName')}
+            </th>
+            <th @click=${() => this.toggleSearch('lastName')}>
+              ${this.activeSearchColumn === 'lastName'
+                ? this.renderSearchInput('lastName')
+                : this.t('lastName')}
+            </th>
+            <th @click=${() => this.toggleSearch('dateOfEmployment')}>
+              ${this.activeSearchColumn === 'dateOfEmployment'
+                ? this.renderSearchInput('dateOfEmployment')
+                : this.t('dateOfEmployment')}
+            </th>
+            <th @click=${() => this.toggleSearch('dateOfBirth')}>
+              ${this.activeSearchColumn === 'dateOfBirth'
+                ? this.renderSearchInput('dateOfBirth')
+                : this.t('dateOfBirth')}
+            </th>
+            <th @click=${() => this.toggleSearch('phone')}>
+              ${this.activeSearchColumn === 'phone'
+                ? this.renderSearchInput('phone')
+                : this.t('phone')}
+            </th>
+            <th @click=${() => this.toggleSearch('email')}>
+              ${this.activeSearchColumn === 'email'
+                ? this.renderSearchInput('email')
+                : this.t('email')}
+            </th>
+            <th @click=${() => this.toggleSearch('department')}>
+              ${this.activeSearchColumn === 'department'
+                ? this.renderSearchInput('department')
+                : this.t('department')}
+            </th>
+            <th @click=${() => this.toggleSearch('position')}>
+              ${this.activeSearchColumn === 'position'
+                ? this.renderSearchInput('position')
+                : this.t('position')}
+            </th>
             <th>${this.t('actions')}</th>
           </tr>
         </thead>

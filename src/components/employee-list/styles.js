@@ -53,4 +53,15 @@ export const employeeListStyles = css`
     margin: 0 0.3rem;
     color: var(--primary-color);
   }
+
+  .button-search {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-left: 0.3rem;
+  }
 `;
