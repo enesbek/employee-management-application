@@ -22,4 +22,9 @@ export default {
   dateOfEmployment: 'İşe Başlama Tarihi',
   editEmployee: 'Çalışanı Düzenle',
   editEmployeeText: 'Düzenlediğiniz çalısan',
+  areYouSure: 'Emin misiniz?',
+  deleteEmployee: 'Çalışanı Sil',
+  deleteConfirmationMessageLeft: 'Seçilen çalışan kaydı',
+  deleteConfirmationMessageRight: 'silinecek',
+  proceed: 'Devam Et',
 };

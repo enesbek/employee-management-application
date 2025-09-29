@@ -2,16 +2,49 @@ import {html} from 'lit';
 import {employeeListStyles} from './styles';
 import {Router} from '@vaadin/router';
 import {BaseElement} from '../base-element';
+import '../../components/delete-modal/index.js';
 
 export default class EmployeeList extends BaseElement {
   static styles = employeeListStyles;
 
   static properties = {
     employees: {type: Array},
+    selectedEmployee: {type: Object},
+    showDeleteModal: {type: Boolean},
   };
+
+  constructor() {
+    super();
+    this.employees = [];
+    this.selectedEmployee = null;
+    this.showDeleteModal = false;
+  }
 
   handleEdit(employee) {
     Router.go(`/employees/${employee.id}/edit`);
+  }
+
+  handleDeleteClick(employee) {
+    this.selectedEmployee = employee;
+    this.showDeleteModal = true;
+  }
+
+  handleConfirmDelete(e) {
+    this.dispatchEvent(
+      new CustomEvent('delete-employee', {
+        detail: e.detail,
+        bubbles: true,
+        composed: true,
+      })
+    );
+
+    this.showDeleteModal = false;
+    this.selectedEmployee = null;
+  }
+
+  handleCancelDelete() {
+    this.showDeleteModal = false;
+    this.selectedEmployee = null;
   }
 
   render() {
@@ -20,6 +53,14 @@ export default class EmployeeList extends BaseElement {
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
       />
+
+      <delete-modal
+        .isOpen=${this.showDeleteModal}
+        .employee=${this.selectedEmployee}
+        @confirm-delete=${this.handleConfirmDelete}
+        @cancel-delete=${this.handleCancelDelete}
+      ></delete-modal>
+
       <table>
         <thead>
           <tr>
@@ -57,14 +98,7 @@ export default class EmployeeList extends BaseElement {
                   ></i>
                   <i
                     class="fa-solid fa-trash"
-                    @click=${() =>
-                      this.dispatchEvent(
-                        new CustomEvent('delete-employee', {
-                          detail: employee,
-                          bubbles: true,
-                          composed: true,
-                        })
-                      )}
+                    @click=${() => this.handleDeleteClick(employee)}
                   ></i>
                 </td>
               </tr>

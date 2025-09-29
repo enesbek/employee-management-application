@@ -47,11 +47,19 @@ export class EmployeesPage extends BaseElement {
     state.setPage(page);
   }
 
-  _handleDeleteEmployee(e) {
-    const {id, name} = e.detail;
+  async _handleDeleteEmployee(e) {
+    const employee = e.detail;
 
-    if (confirm(`Are you sure you want to delete ${name}?`)) {
-      useEmployeesStore.getState().deleteEmployee(id);
+    try {
+      // Zustand store'dan delete fonksiyonunu çağır
+      await useEmployeesStore.getState().deleteEmployee(employee.id);
+
+      // Opsiyonel: Success toast/notification göster
+      console.log('Employee deleted successfully:', employee);
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+      // Opsiyonel: Error toast/notification göster
+      alert('Failed to delete employee: ' + error.message);
     }
   }
 
@@ -146,7 +154,7 @@ export class EmployeesPage extends BaseElement {
                 ? html`<employee-list
                     .employees=${employees}
                     @edit-employee=${(e) => this.openEditPage(e.detail)}
-                    @delete-employee=${(e) => this.deleteEmployee(e.detail)}
+                    @delete-employee=${this._handleDeleteEmployee}
                   ></employee-list>`
                 : html`<div>Grid View Placeholder</div>`}
             `}
