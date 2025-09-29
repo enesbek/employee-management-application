@@ -49,7 +49,7 @@ export const useEmployeesStore = createStore((set, get) => ({
 
   setSearchQuery: async (searchQuery) => {
     set({searchQuery, currentPage: 1});
-    clearEmployeeCache(); 
+    clearEmployeeCache();
     await get().getEmployees();
   },
 
@@ -72,7 +72,7 @@ export const useEmployeesStore = createStore((set, get) => ({
         loading: false,
       });
 
-      clearEmployeeCache(); 
+      clearEmployeeCache();
     } catch (error) {
       set({error: error.message, loading: false});
       throw error;
@@ -92,7 +92,7 @@ export const useEmployeesStore = createStore((set, get) => ({
         loading: false,
       });
 
-      clearEmployeeCache(); 
+      clearEmployeeCache();
 
       const {currentPage} = get();
       if (updatedEmployees.length === 0 && currentPage > 1) {
@@ -122,7 +122,7 @@ export const useEmployeesStore = createStore((set, get) => ({
         loading: false,
       });
 
-      clearEmployeeCache(); 
+      clearEmployeeCache();
     } catch (error) {
       set({error: error.message, loading: false});
       throw error;
@@ -151,8 +151,3 @@ export const selectHasNextPage = (state) =>
   state.currentPage < selectTotalPages(state);
 
 export const selectHasPreviousPage = (state) => state.currentPage > 1;
-
-export const selectIsFirstPage = (state) => state.currentPage === 1;
-
-export const selectIsLastPage = (state) =>
-  state.currentPage === selectTotalPages(state);

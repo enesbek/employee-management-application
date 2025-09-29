@@ -19,19 +19,46 @@ export class EmployeeForm extends BaseElement {
     }
 
     const formData = new FormData(form);
-    const employee = Object.fromEntries(formData.entries());
+    const employeeData = Object.fromEntries(formData.entries());
 
-    this.dispatchEvent(new CustomEvent('employee-save', {detail: employee}));
+    if (this.employee?.id) {
+      employeeData.id = this.employee.id;
+    }
+
+    this.dispatchEvent(
+      new CustomEvent('employee-save', {
+        detail: employeeData,
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  handleCancel() {
+    this.dispatchEvent(
+      new CustomEvent('employee-cancel', {
+        bubbles: true,
+        composed: true,
+      })
+    );
+    this.shadowRoot.querySelector('form').reset();
   }
 
   render() {
+    const isEdit = !!this.employee;
+
     return html`
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
       />
-      <form action="#" method="post" aria-label="örnek form">
-        <!-- 8 input alanı -->
+      ${isEdit
+        ? html`<p class="edit-form-desc-text">
+            ${this.t('editEmployeeText')}
+            ${this.employee.firstName + ' ' + this.employee.lastName}
+          </p>`
+        : ''}
+      <form @submit=${this.handleSubmit}>
         <div class="field">
           <label for="firstName">${this.t('firstName')}</label>
           <input
@@ -65,7 +92,7 @@ export class EmployeeForm extends BaseElement {
         <div class="field">
           <label for="dateOfBirth">${this.t('dateOfBirth')}</label>
           <input
-            type="email"
+            type="date"
             name="dateOfBirth"
             .value=${this.employee?.dateOfBirth ?? ''}
             required
@@ -119,16 +146,15 @@ export class EmployeeForm extends BaseElement {
           </select>
         </div>
 
-        <!-- Buttons that are the same width as a single column and centered -->
         <div class="buttons-row">
           <div class="btns">
             <button type="submit" class="btn-save">
-              ${this.employee ? this.t('updateEmployee') : this.t('save')}
+              ${isEdit ? this.t('update') : this.t('save')}
             </button>
             <button
               type="button"
               class="btn-cancel"
-              onclick="document.querySelector('form').reset();"
+              @click=${this.handleCancel}
             >
               ${this.t('cancel')}
             </button>

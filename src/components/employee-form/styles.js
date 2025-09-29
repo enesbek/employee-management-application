@@ -5,7 +5,12 @@ export const employeeFormStyles = css`
     display: block;
     background-color: white;
     min-height: 70vh;
-    padding: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .edit-form-desc-text {
+    font-size: 0.8rem;
+    margin: 0.5rem 0.1rem;
   }
 
   form {
@@ -68,7 +73,8 @@ export const employeeFormStyles = css`
     padding: 10px 12px;
     border-radius: 8px;
     border: none;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
     min-width: 270px;
   }
@@ -79,8 +85,8 @@ export const employeeFormStyles = css`
   }
   .btn-cancel {
     background: white;
-    color: var(--border-dark-blue);
-    border: 1px solid var(--border-dark-blue) !important;
+    color: var(--border-dark-purple);
+    border: 1px solid var(--border-dark-purple) !important;
   }
 
   @media (max-width: 900px) {

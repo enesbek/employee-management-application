@@ -145,8 +145,8 @@ export class EmployeesPage extends BaseElement {
               ${this.view === 'list'
                 ? html`<employee-list
                     .employees=${employees}
-                    @delete-employee=${this._handleDeleteEmployee}
-                    @edit-employee=${this._handleEditEmployee}
+                    @edit-employee=${(e) => this.openEditPage(e.detail)}
+                    @delete-employee=${(e) => this.deleteEmployee(e.detail)}
                   ></employee-list>`
                 : html`<div>Grid View Placeholder</div>`}
             `}
