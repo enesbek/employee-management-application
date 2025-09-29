@@ -1,12 +1,18 @@
-import {LitElement, html} from 'lit';
+import {html} from 'lit';
 import {employeeListStyles} from './styles';
+import {Router} from '@vaadin/router';
+import {BaseElement} from '../base-element';
 
-export default class EmployeeList extends LitElement {
+export default class EmployeeList extends BaseElement {
   static styles = employeeListStyles;
 
   static properties = {
     employees: {type: Array},
   };
+
+  handleEdit(employee) {
+    Router.go(`/employees/${employee.id}/edit`);
+  }
 
   render() {
     return html`
@@ -18,19 +24,19 @@ export default class EmployeeList extends LitElement {
         <thead>
           <tr>
             <th class="select-icon"><i class="fa-regular fa-square"></i></th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Date of Employment</th>
-            <th>Date of Birth</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Position</th>
-            <th>Actions</th>
+            <th>${this.t('firstName')}</th>
+            <th>${this.t('lastName')}</th>
+            <th>${this.t('dateOfEmployment')}</th>
+            <th>${this.t('dateOfBirth')}</th>
+            <th>${this.t('phone')}</th>
+            <th>${this.t('email')}</th>
+            <th>${this.t('department')}</th>
+            <th>${this.t('position')}</th>
+            <th>${this.t('actions')}</th>
           </tr>
         </thead>
         <tbody>
-          ${this.employees.map(
+          ${(this.employees || []).map(
             (employee) => html`
               <tr>
                 <td class="select-icon">
@@ -38,15 +44,28 @@ export default class EmployeeList extends LitElement {
                 </td>
                 <td>${employee.firstName}</td>
                 <td>${employee.lastName}</td>
-                <td class="thin">${employee.dateOfEmployment}</td>
-                <td class="thin">${employee.dateOfBirth}</td>
+                <td class="thin">${employee.dateOfEmployment || 'N/A'}</td>
+                <td class="thin">${employee.birthDate}</td>
                 <td class="thin">${employee.phone}</td>
                 <td class="thin">${employee.email}</td>
-                <td class="thin">${employee.department}</td>
-                <td class="thin">${employee.position}</td>
+                <td class="thin">${employee.company?.department || 'N/A'}</td>
+                <td class="thin">${employee.company?.title || 'N/A'}</td>
                 <td class="actions">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                  <i class="fa-solid fa-trash"></i>
+                  <i
+                    class="fa-regular fa-pen-to-square"
+                    @click=${() => this.handleEdit(employee)}
+                  ></i>
+                  <i
+                    class="fa-solid fa-trash"
+                    @click=${() =>
+                      this.dispatchEvent(
+                        new CustomEvent('delete-employee', {
+                          detail: employee,
+                          bubbles: true,
+                          composed: true,
+                        })
+                      )}
+                  ></i>
                 </td>
               </tr>
             `

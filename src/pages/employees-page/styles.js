@@ -24,9 +24,9 @@ export const employeePageStyles = css`
     border: none;
     background: none;
     cursor: pointer;
-    color: var(--primary-color);
-    font-size: 1rem;
-    font-weight: 100;
+    color: var(--text-dark-gray);
+    font-size: 0.9rem;
+    font-weight: lighter;
   }
   .hover {
     color: var(--inactive-color);
