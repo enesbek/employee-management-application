@@ -156,7 +156,11 @@ export class EmployeesPage extends BaseElement {
                     @edit-employee=${(e) => this.openEditPage(e.detail)}
                     @delete-employee=${this._handleDeleteEmployee}
                   ></employee-list>`
-                : html`<div>Grid View Placeholder</div>`}
+                : html`<div>
+                    Grid view? Not today 😎 Our list is looking awesome, the
+                    grid’s just a little jealous… but it’s coming soon, promise
+                    (if I get the job)!
+                  </div>`}
             `}
 
         <div class="pagination">
