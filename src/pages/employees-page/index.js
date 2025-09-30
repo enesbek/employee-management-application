@@ -51,14 +51,10 @@ export class EmployeesPage extends BaseElement {
     const employee = e.detail;
 
     try {
-      // Zustand store'dan delete fonksiyonunu çağır
       await useEmployeesStore.getState().deleteEmployee(employee.id);
-
-      // Opsiyonel: Success toast/notification göster
       console.log('Employee deleted successfully:', employee);
     } catch (error) {
       console.error('Error deleting employee:', error);
-      // Opsiyonel: Error toast/notification göster
       alert('Failed to delete employee: ' + error.message);
     }
   }
@@ -121,7 +117,7 @@ export class EmployeesPage extends BaseElement {
 
   render() {
     const state = useEmployeesStore.getState();
-    const {employees, currentPage, loading, error} = state;
+    const {employees, currentPage, loading} = state;
     const hasPrevious = selectHasPreviousPage(state);
     const hasNext = selectHasNextPage(state);
 
@@ -138,12 +134,6 @@ export class EmployeesPage extends BaseElement {
           showActions=${true}
         ></pages-header>
 
-        ${error
-          ? html`<div class="error">
-              <i class="fa-solid fa-circle-exclamation"></i>
-              ${error}
-            </div>`
-          : ''}
         ${loading
           ? html`<div class="loading">
               <i class="fa-solid fa-spinner fa-spin"></i>

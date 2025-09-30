@@ -54,6 +54,37 @@ export const employeeListStyles = css`
     cursor: pointer;
   }
 
+  input[type='checkbox'] {
+    accent-color: var(--primary-color);
+    color: white;
+  }
+
+  .custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--text-dark-gray);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .custom-checkbox:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+
+  .custom-checkbox:checked::after {
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    left: 2px;
+    top: -2px;
+  }
+
   .actions i {
     cursor: pointer;
     margin: 0 0.3rem;

@@ -27,5 +27,7 @@ export default {
   deleteConfirmationMessageLeft: 'Seçilen çalışan kaydı',
   deleteConfirmationMessageRight: 'silinecek',
   proceed: 'Devam Et',
-  deleteSelected: 'Seçilenleri Sil',
+  pleaseSelect: 'Lütfen Seçiniz',
+  employeeSavedAlert: 'Çalışan başarıyla kaydedildi!',
+  employeeUpdatedAlert: 'Çalışan başarıyla güncellendi!',
 };

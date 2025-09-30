@@ -105,6 +105,7 @@ export const useEmployeesStore = createStore((set, get) => ({
   },
 
   addEmployee: async (employeeData) => {
+    console.log('Adding employee:', employeeData);
     set({loading: true, error: null});
 
     try {

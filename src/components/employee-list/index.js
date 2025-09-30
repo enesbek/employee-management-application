@@ -140,6 +140,7 @@ export default class EmployeeList extends BaseElement {
             <th class="select-icon">
               <input
                 type="checkbox"
+                class="custom-checkbox"
                 .checked=${this.selectedEmployees.includes()}
                 @change=${() => this.toggleSelectAll()}
               />
@@ -190,7 +191,7 @@ export default class EmployeeList extends BaseElement {
                     class="button-search"
                     @click=${() => this.handleDeleteSelected()}
                   >
-                    ${this.t('deleteSelected')}
+                    ${this.t('delete')}
                   </button>`
                 : this.t('actions')}
             </th>
@@ -203,6 +204,7 @@ export default class EmployeeList extends BaseElement {
                 <td class="select-icon">
                   <input
                     type="checkbox"
+                    class="custom-checkbox"
                     .checked=${this.selectedEmployees.includes(employee.id)}
                     @change=${() => this.toggleSelect(employee.id)}
                   />
