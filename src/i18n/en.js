@@ -26,5 +26,7 @@ export default {
   deleteConfirmationMessageLeft: 'Selected employee record of',
   deleteConfirmationMessageRight: 'will be deleted',
   proceed: 'Proceed',
-  deleteSelected: 'Delete Selected',
+  pleaseSelect: 'Please Select',
+  employeeSavedAlert: 'Employee saved successfully!',
+  employeeUpdatedAlert: 'Employee updated successfully!',
 };

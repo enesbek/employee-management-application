@@ -1,11 +1,18 @@
 import {html} from 'lit';
+import {Router} from '@vaadin/router';
 import {employeeFormStyles} from './styles';
 import {BaseElement} from '../base-element';
 
 export class EmployeeForm extends BaseElement {
   static properties = {
     employee: {type: Object},
+    successMessage: {type: String},
   };
+
+  constructor() {
+    super();
+    this.successMessage = '';
+  }
 
   static styles = employeeFormStyles;
 
@@ -32,6 +39,11 @@ export class EmployeeForm extends BaseElement {
         composed: true,
       })
     );
+
+    alert(
+      this.t(employeeData.id ? 'employeeUpdatedAlert' : 'employeeSavedAlert')
+    );
+    Router.go('/');
   }
 
   handleCancel() {
@@ -123,12 +135,15 @@ export class EmployeeForm extends BaseElement {
 
         <div class="field">
           <label for="department">${this.t('department')}</label>
-          <input
+          <select
             name="department"
+            type="text"
             .value=${this.employee?.department ?? ''}
             required
-            type="text"
-          />
+          >
+            <option value="Analytics">Analytics</option>
+            <option value="Tech">Tech</option>
+          </select>
         </div>
 
         <div class="field">
@@ -139,7 +154,7 @@ export class EmployeeForm extends BaseElement {
             .value=${this.employee?.position ?? ''}
             required
           >
-            <option value="" disabled>Select Position</option>
+            <option value="" disabled>${this.t('pleaseSelect')}</option>
             <option value="Junior">Junior</option>
             <option value="Medior">Mid Level</option>
             <option value="Senior">Senior</option>
