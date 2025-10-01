@@ -37,7 +37,6 @@ src/
 
 ![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)
 
-##Notes
-
-### Employee data is fetched from dummyjson API.
-### Edit / Update requests were implemented, but since the API does not support actual data changes, modifications are not persisted.
+### Notes
+- Employee data is fetched from dummyjson API.
+- Edit / Update requests were implemented, but since the API does not support actual data changes, modifications are not persisted.
