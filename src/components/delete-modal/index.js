@@ -41,7 +41,7 @@ export default class DeleteModal extends BaseElement {
 
   handleOverlayClick(e) {
     if (e.target === e.currentTarget) {
-      this.close();
+      this.handleCancel();
     }
   }
 
@@ -49,7 +49,7 @@ export default class DeleteModal extends BaseElement {
     super.connectedCallback();
     this._handleKeyDown = (e) => {
       if (e.key === 'Escape' && this.isOpen) {
-        this.close();
+        this.handleCancel();
       }
     };
     window.addEventListener('keydown', this._handleKeyDown);

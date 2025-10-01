@@ -1,6 +1,6 @@
 import {html} from 'lit';
-import {t, setLanguage} from '../../i18n/index.js';
 import {Router} from '@vaadin/router';
+import {t, setLanguage} from '../../i18n/index.js';
 import {appHeaderStyles} from './styles.js';
 import {BaseElement} from '../base-element/index.js';
 
@@ -44,7 +44,7 @@ export default class AppHeader extends BaseElement {
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
       />
       <header class="app-header">
-        <div class="app-header_left">
+        <div class="app-header_left" @click=${() => Router.go('/')}>
           <img src="../../assets/ing.webp" alt="Logo" height="40" />
           <span class="app-header_bank-name">ING</span>
         </div>

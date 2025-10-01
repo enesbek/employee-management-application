@@ -12,66 +12,14 @@ if (!['dev', 'prod'].includes(mode)) {
   throw new Error(`MODE must be "dev" or "prod", was "${mode}"`);
 }
 
-// Uncomment for testing on Sauce Labs
-// Must run `npm i --save-dev @web/test-runner-saucelabs` and set
-// SAUCE_USERNAME and SAUCE_USERNAME environment variables
-// ===========
-// import {createSauceLabsLauncher} from '@web/test-runner-saucelabs';
-// const sauceLabsLauncher = createSauceLabsLauncher(
-//   {
-//     user: process.env.SAUCE_USERNAME,
-//     key: process.env.SAUCE_USERNAME,
-//   },
-//   {
-//     'sauce:options': {
-//       name: 'unit tests',
-//       build: `${process.env.GITHUB_REF ?? 'local'} build ${
-//         process.env.GITHUB_RUN_NUMBER ?? ''
-//       }`,
-//     },
-//   }
-// );
-
-// Uncomment for testing on BrowserStack
-// Must run `npm i --save-dev @web/test-runner-browserstack` and set
-// BROWSER_STACK_USERNAME and BROWSER_STACK_ACCESS_KEY environment variables
-// ===========
-// import {browserstackLauncher as createBrowserstackLauncher} from '@web/test-runner-browserstack';
-// const browserstackLauncher = (config) => createBrowserstackLauncher({
-//   capabilities: {
-//     'browserstack.user': process.env.BROWSER_STACK_USERNAME,
-//     'browserstack.key': process.env.BROWSER_STACK_ACCESS_KEY,
-//     project: 'my-element',
-//     name: 'unit tests',
-//     build: `${process.env.GITHUB_REF ?? 'local'} build ${
-//       process.env.GITHUB_RUN_NUMBER ?? ''
-//     }`,
-//     ...config,
-//   }
-// });
-
 const browsers = {
   // Local browser testing via playwright
   // ===========
   chromium: playwrightLauncher({product: 'chromium'}),
   firefox: playwrightLauncher({product: 'firefox'}),
   webkit: playwrightLauncher({product: 'webkit'}),
-
-  // Uncomment example launchers for running on Sauce Labs
-  // ===========
-  // chromium: sauceLabsLauncher({browserName: 'chrome', browserVersion: 'latest', platformName: 'Windows 10'}),
-  // firefox: sauceLabsLauncher({browserName: 'firefox', browserVersion: 'latest', platformName: 'Windows 10'}),
-  // safari: sauceLabsLauncher({browserName: 'safari', browserVersion: 'latest', platformName: 'macOS 10.15'}),
-
-  // Uncomment example launchers for running on Sauce Labs
-  // ===========
-  // chromium: browserstackLauncher({browserName: 'Chrome', os: 'Windows', os_version: '10'}),
-  // firefox: browserstackLauncher({browserName: 'Firefox', os: 'Windows', os_version: '10'}),
-  // edge: browserstackLauncher({browserName: 'MicrosoftEdge', os: 'Windows', os_version: '10'}),
 };
 
-// Prepend BROWSERS=x,y to `npm run test` to run a subset of browsers
-// e.g. `BROWSERS=chromium,firefox npm run test`
 const noBrowser = (b) => {
   throw new Error(`No browser configured named '${b}'; using defaults`);
 };
@@ -84,28 +32,33 @@ try {
   console.warn(e);
 }
 
-// https://modern-web.dev/docs/test-runner/cli-and-configuration/
 export default {
   rootDir: '.',
-  files: ['./test/**/*_test.js'],
+  files: ['src/**/*.test.js'],
   nodeResolve: {exportConditions: mode === 'dev' ? ['development'] : []},
+  coverage: true,
+  coverageConfig: {
+    threshold: {
+      statements: 85,
+      branches: 85,
+      functions: 85,
+      lines: 85,
+    },
+    include: ['src/**/*.js'],
+    exclude: ['src/**/*.test.js', 'src/**/*.styles.js', 'src/**/styles.js'],
+  },
   preserveSymlinks: true,
   browsers: commandLineBrowsers ?? Object.values(browsers),
   testFramework: {
-    // https://mochajs.org/api/mocha
     config: {
-      ui: 'tdd',
+      ui: 'bdd',
       timeout: '60000',
     },
   },
   plugins: [
-    // Detect browsers without modules (e.g. IE11) and transform to SystemJS
-    // (https://modern-web.dev/docs/dev-server/plugins/legacy/).
     legacyPlugin({
       polyfills: {
         webcomponents: true,
-        // Inject lit's polyfill-support module into test files, which is required
-        // for interfacing with the webcomponents polyfills
         custom: [
           {
             name: 'lit-polyfill-support',

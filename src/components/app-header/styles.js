@@ -20,6 +20,7 @@ export const appHeaderStyles = css`
     display: flex;
     align-items: center;
     gap: 0.3rem;
+    cursor: pointer;
   }
 
   .app-header_bank-name {
