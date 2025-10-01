@@ -35,7 +35,7 @@ src/
  └─ styles/            # Global styles
 ```
 
-![Coverage](https://img.shields.io/badge/coverage-87%25-green)
+![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)
 
 ##Notes
 
