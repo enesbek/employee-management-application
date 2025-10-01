@@ -39,5 +39,5 @@ src/
 
 ##Notes
 
-1- Employee data is fetched from dummyjson API.
-2- Edit / Update requests were implemented, but since the API does not support actual data changes, modifications are not persisted.
+### Employee data is fetched from dummyjson API.
+### Edit / Update requests were implemented, but since the API does not support actual data changes, modifications are not persisted.
