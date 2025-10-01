@@ -38,5 +38,7 @@ src/
 ![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)
 
 ### Notes
+
 - Employee data is fetched from dummyjson API.
 - Edit / Update requests were implemented, but since the API does not support actual data changes, modifications are not persisted.
+- The project was originally cloned from the [lit-element-starter-js](https://github.com/lit/lit-element-starter-js) repository. Since commit history contained starter commits, after the first 4 commits the main and dev branches were rebased and history was reset. If you want to check the initial 4 commits, refer to the archive branch.
